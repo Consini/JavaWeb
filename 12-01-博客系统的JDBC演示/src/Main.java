@@ -14,17 +14,17 @@ public class Main {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql119?useSSl=false" ,
                 "root",
                 "mysql");
-        System.out.println(connection);
-        //Statement statement = connection.createStatement();
+        System.out.println(connection);//输出com.mysql.jdbc.JDBC4Connection@506c589e
+        Statement statement = connection.createStatement();
 
         // 练习
-//        int rows = statement.executeUpdate("INSERT INTO xiangrikui VALUES" +
-//                " (10086,'蜡笔小新'),(10039,'麦兜'),(10028,'孙悟空')");
-//        System.out.println(rows);
+        int rows = statement.executeUpdate("INSERT INTO xiangrikui VALUES" +
+                " (10099,'蜡笔小新')");
+        System.out.println(rows);
         // 通过 try 方式就不用手动 close
-        try(Statement statement1 = connection.createStatement()){
-            statement1.executeUpdate("InSERT into xiangrikui VALUES (10002,'戚容')");
-        }
+//        try(Statement statement1 = connection.createStatement()){
+//            statement1.executeUpdate("InSERT into xiangrikui VALUES (10002,'戚容')");
+//        }
 
 //         //修改数据
 //        int rows = statement.executeUpdate("INSERT INTO classes(name) VALUES ('Java11班')");
@@ -43,11 +43,13 @@ public class Main {
 //        System.out.println(rows);
 
 //        ResultSet resultSet = statement.executeQuery("SHOW TABLES");
+//          next 必须首先调一次
 //        while(resultSet.next()){// 一次读一行
 //            // JDBC的列从 1 开始
 //            String tableName = resultSet.getString(1);
 //            System.out.println(tableName);
 //        }
+        //每次查询完都要关闭 resultSet
 //        resultSet.close();
 
         // 关闭statement,
