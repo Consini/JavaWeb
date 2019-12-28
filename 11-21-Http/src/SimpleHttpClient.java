@@ -45,14 +45,16 @@ public class SimpleHttpClient {
             System.out.println("响应头: " + key + " = " + value);
         }
         System.out.println("正文长度： "+contentLength);
-        int alreadyRead = len - index - 4;
+        int alreadyRead = len - index - 4;// 已经读了的
         int surplus = contentLength - alreadyRead;//还应该读的
         byte[] body = new byte[contentLength];
         System.arraycopy(bytes,index+4,body,0,alreadyRead);
-        int realRead = socket.getInputStream().read(body,alreadyRead,surplus);
+        int realRead = socket.getInputStream().read(body,alreadyRead,surplus);//实际读了
         System.out.println("已经读了： "+alreadyRead);
         System.out.println("还应该读: "+surplus);
         System.out.println("实际读了： "+realRead);
+
+        //System.out.println(new String(body,0,body.length,"UTF-8"));
         FileOutputStream fileOutputStream = new FileOutputStream("百度.html");
         fileOutputStream.write(body);
     }
