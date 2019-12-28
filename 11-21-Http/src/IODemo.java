@@ -1,45 +1,28 @@
-import com.sun.deploy.util.SyncAccess;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
-
 /**
  * @Description TODO
  * @Author K
  * @Date 2019/12/21 9:15
  **/
 public class IODemo {
-    /* 1. 可以从文件中读
+    /* 从哪读？
+     * 1. 可以从文件中读
      * 2. 可以从网络中读（网卡/TCP连接)
-     * 3. 可以从内存中读（内存中的一段空间当成输入源
-     * 4. 可以从标准输入读
-    *@Author K
-    *@Date 10:01 2019/12/21
-    **/
+     * 3. 可以从内存中读（内存中的一段空间当成输入源）
+     * 4. 可以从标准输入读 */
     private static InputStream 获得一个输入流() throws IOException {
-        // 1. 文件中读
-        /*
         InputStream inputStream;
-        inputStream = new FileInputStream("test.txt");
-        return inputStream;
-        */
-
-        // 2.内存中读与标准输入读
-        /*
-        InputStream inputStream;
-        //byte[] bytes = "lalala\r\noooooooo".getBytes("UTF-8");// 内存中读
-        //inputStream = new ByteArrayInputStream(bytes);
-        inputStream = System.in;// 标准输入
-        return inputStream;
-        */
-
-
-        //网络中读
-
-        InputStream inputStream;
-        Socket socket = new Socket("www.baidu.com",80);
+         //1. 文件中读
+//        inputStream = new FileInputStream("test.txt");
+         //2.内存中读
+//        byte[] bytes = "第一行\r\n第二行\r\n".getBytes("UTF-8");
+//        inputStream = new ByteArrayInputStream(bytes);// 字节数组作为输入流
+        //3.标准输入读
+//        inputStream = System.in;// 标准输入
+        //4.网络中读，访问百度
+        Socket socket = new Socket("www.baidu.com",80);// 域名+端口
         OutputStream os = socket.getOutputStream();
         Writer writer = new OutputStreamWriter(os,"UTF-8");
         PrintWriter printWriter = new PrintWriter(writer,false);
@@ -49,106 +32,88 @@ public class IODemo {
         return inputStream;
 
     }
-    /*1.直接通过字节方式读，然后程序进行字符编码
-      2.把 Stream 转化为 Reader ，进行字符形式读取
-        2.1 直接读
-        2.2 BufferReader  readLine
-      3. Scanner 也可以
-    *@Author K
-    *@Date 9:24 2019/12/21
-    **/
+    /* 1.直接通过字节方式读，然后程序进行字符编码
+     * 2.把 Stream 转化为 Reader ，进行字符形式读取
+     *   2.1 直接读
+     *   2.2 BufferReader  用readLine方法
+     * 3. Scanner */
     private static String 从字节流中获得字符数据(InputStream is)throws IOException{
-        //第一种方式，字节读取
-        //缺点：buffer < 字符长度 || 精确控制字符
+        //1.字节读取。缺点：buffer < 字符长度 || 精确控制字符都比较麻烦
         /*
-        byte[] buffer = new byte[1024];
-        int len = is.read(buffer);
-        String message = new String(buffer,0,len,"UTF-8");
+        byte[] buffer = new byte[1024];// 数据放在 buffer 中
+        int len = is.read(buffer);// 实际读到的大小
+        String message = new String(buffer,0,len,"UTF-8");// 进行字符编码
         return message;
         */
 
-        //第二种方法，进行字符形式直接读取
-        /*
+        //2.进行字符形式直接读取
+        /*//2.1 直接读
         Reader reader = new InputStreamReader(is,"UTF-8");
-        char[] buffer = new char[10];//若字符长度大于buffer，就不能读全
-        int len = reader.read(buffer);
-        String message = new String(buffer,0,len);
-        return message;
-        */
-        /* 可以保证读全
-        StringBuilder stringBuilder = new StringBuilder();
-        Reader reader = new InputStreamReader(is,"UTF-8");
-        char[] buffer = new char[3];
+        char[] buffer = new char[6];
         int len;
-        while((len=reader.read(buffer))!=-1){
-            stringBuilder.append(buffer,0,len);
+//      len = reader.read(buffer);//若字符长度大于 buffer 的长度，就不能读全
+//      String message = new String(buffer,0,len);
+//      return message;
+        StringBuilder sb = new StringBuilder();//可以保证读全
+        while((len=reader.read(buffer))!=-1){// EOS(End Of Stream),没读到流的末尾-1就一直读
+            sb.append(buffer,0,len);
         }
-        String message = stringBuilder.toString();
-        return message;
+        return sb.toString();
         */
 
-        /*
+        /*//2.2 通过 BufferReader
         Reader reader = new InputStreamReader(is);
         BufferedReader bufferedReader = new BufferedReader(reader);
         String line;
         StringBuilder sb = new StringBuilder();
         while((line=bufferedReader.readLine()) != null){
-            sb.append(line+"\r\n");//自己加换行，否则readLine会自动去掉换行，读出的数据就是一行
+            sb.append(line+"\r\n");//readLine会自动去掉换行，所以需要原格式的话需要自己加换行，否则读出的数据就是一行
         }
         return sb.toString();
         */
 
         // 3.Scanner 读
         // 只读第一行
-
-        Scanner scanner = new Scanner(is,"UTF-8");
-        return scanner.nextLine();
-
-        //读多行
 //        Scanner scanner = new Scanner(is,"UTF-8");
-//        StringBuilder sb = new StringBuilder();
-//        // 从内存中读时读多行，行数不确定时 需要 ctrl+D 结束,终端上 ctrl+Z 表示结束
-//        while(scanner.hasNext()){
-//            sb.append(scanner.nextLine()+"\r\n");
-//        }
-        // 确定行数时读，
-//        int a = 4;
-//        while(a-- !=0/*scanner.hasNext()*/){
-//            sb.append(scanner.nextLine()+"\r\n");
-//        }
-//        return sb.toString();
+//        return scanner.nextLine();
+        //读多行
+        Scanner scanner = new Scanner(is,"UTF-8");
+        StringBuilder sb = new StringBuilder();
+        while(scanner.hasNext()){// 从内存中读时读多行，行数不确定时 需要 ctrl+D 结束,终端上 ctrl+Z 表示结束
+            sb.append(scanner.nextLine()+"\r\n");
+        }
+        return sb.toString();
     }
 
     private static OutputStream 获得一个输出流() throws  IOException{
+        //1.文件中获取
         OutputStream os = new FileOutputStream("本地输出文件.txt");
-        //Socket socket = new Socket("www.baidu.com", 80);
-        //OutputStream os = socket.getOutputStream();
-        //OutputStream os = new ByteArrayOutputStream();
+        //2.从网络中获取
+//        Socket socket = new Socket("www.baidu.com", 80);
+//        OutputStream os = socket.getOutputStream();
+        //3.从内存中
+//        OutputStream os = new ByteArrayOutputStream();
         return os;
     }
-
-
     private static void 输出一段字符(OutputStream os,String message)throws IOException{
-
-//        byte[] buffer = message.getBytes("UTF-8");
+        //1. 直接写
+//        byte[] buffer = message.getBytes("UTF-8");//转换成字符数组
 //        os.write(buffer);
-
-
+        //2. Writer写
         Writer writer = new OutputStreamWriter(os, "UTF-8");
 //        writer.append(message);
 //        writer.flush();
-
+        //3. PrintWriter写
         PrintWriter printWriter = new PrintWriter(writer, false);
         printWriter.printf("%s", message);
         printWriter.flush();
     }
     public static void main(String[] args) throws IOException {
-        /*
-        InputStream is = 获得一个输入流();
-        String message = 从字节流中获得字符数据(is);
-        System.out.println(message);
-        */
+//        InputStream is = 获得一个输入流();
+//        String message = 从字节流中获得字符数据(is);
+//        System.out.println(message);
+
         OutputStream os = 获得一个输出流();
-        输出一段字符(os, "lalal\r\n1100011\r\n");
+        输出一段字符(os, "第一行\r\n第二行\r\n");
     }
 }
