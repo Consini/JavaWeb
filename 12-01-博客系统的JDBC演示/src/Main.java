@@ -5,6 +5,8 @@ import java.sql.*;
  * @Author K
  * @Date 2019/12/1 16:49
  **/
+// Connection       MySQL 的网络连接
+// Statement        MySQL 语句
 public class Main {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         //1.注册 Driver
