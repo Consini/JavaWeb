@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User implements Serializable {
+public class User implements Serializable {// 实现序列化
     public String id;
     public String username;
-    public int balance; // zhang hu xin xi
+    public int balance; //账户余额
 
     public User(String id, String username, int balance) {
         this.id = id;
