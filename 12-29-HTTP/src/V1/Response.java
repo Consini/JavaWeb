@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Response {
     String status = "200 OK";
-    Map<String, String> headers = new HashMap<>();
+    public Map<String, String> headers = new HashMap<>();
     StringBuilder bodyBuilder = new StringBuilder();
 
     Response() {
