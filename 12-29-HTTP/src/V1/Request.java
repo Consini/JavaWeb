@@ -9,9 +9,9 @@ import java.util.*;
  * @Date 2019/12/29 9:23
  **/
 public class Request {
-    String method;
-    String path;
-    String version;
+    public String method;
+    public String path;
+    public String version;
 
     public Map<String,String> headers = new TreeMap<>();
     public Map<String,String> parameters = new HashMap<>();//请求参数query_string
@@ -33,7 +33,7 @@ public class Request {
         parseURL(request,group[1]);//解析路径： URL
         request.version = group[2];// 版本
     }
-    //解析 URL:拆分路径path 和查询字符串query_string
+    //解析 URL:拆分路径 path 和查询字符串 query_string
     private static void parseURL(Request request, String s) throws UnsupportedEncodingException {
         String[] group = s.split("\\?");
         request.path = URLDecoder.decode(group[0], "UTF-8");
