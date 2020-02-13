@@ -41,7 +41,7 @@ public class SingleThreadCatch {
         dataSource.setPort(3306);
         dataSource.setUser("root");
         dataSource.setPassword("mysql");
-        dataSource.setDatabaseName("tangshi0107");
+        dataSource.setDatabaseName("tangshi");
         dataSource.setUseSSL(false);
         dataSource.setCharacterEncoding("UTF8");
 
@@ -111,7 +111,7 @@ public class SingleThreadCatch {
                 statement.setString(3, title);
                 statement.setString(4, author);
                 statement.setString(5, content);
-                statement.setString(6, words.toString());
+                statement.setString(6, words);
                 statement.executeUpdate();
                 System.out.println("插入: " + title);
             }
