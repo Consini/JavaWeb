@@ -18,13 +18,14 @@ public class CountDownLatchDemo {
 
         @Override
         public void run() {
+            // 模拟工作随机耗时
             Random random = new Random();
             try {
                 Thread.sleep(random.nextInt(10) * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            countDownLatch.countDown();
+            countDownLatch.countDown();// 计数，直到任务结束
             System.out.println("一个线程的任务结束了");
         }
     }
@@ -37,7 +38,7 @@ public class CountDownLatchDemo {
         }
 
         System.out.println("等待 10 个线程全部结束");
-        countDownLatch.await();
+        countDownLatch.await();// 等待 10个线程全部结束
         System.out.println("10 个线程全部结束了");
     }
 }
