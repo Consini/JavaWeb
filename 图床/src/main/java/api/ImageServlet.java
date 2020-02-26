@@ -69,6 +69,7 @@ public class ImageServlet extends HttpServlet {
    //上传图片
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json; charset=utf-8");
         // 1. 获取图片的属性信息, 并且存入数据库
         //  a) 需要创建一个 factory 对象 和 upload 对象, 这是为了获取到图片属性做的准备工作
         //     固定的逻辑
@@ -84,7 +85,6 @@ public class ImageServlet extends HttpServlet {
             // 出现异常说明解析出错!
             e.printStackTrace();
             // 告诉客户端出现的具体的错误是啥
-            resp.setContentType("application/json; charset=utf-8");
             resp.getWriter().write("{ \"ok\": false, \"reason\": \"请求解析失败\" }");
             return;
         }
@@ -117,15 +117,12 @@ public class ImageServlet extends HttpServlet {
                 fileItem.write(file);
             } catch (Exception e) {
                 e.printStackTrace();
-
-                resp.setContentType("application/json; charset=utf-8");
                 resp.getWriter().write("{ \"ok\": false, \"reason\": \"写磁盘失败\" }");
                 return;
             }
         }
 
         // 3. 给客户端返回一个结果数据
-//        resp.setContentType("application/json; charset=utf-8");
 //        resp.getWriter().write("{ \"ok\": true }");
         // 重定向
         resp.sendRedirect("index.html");
@@ -153,9 +150,15 @@ public class ImageServlet extends HttpServlet {
         }
         // 3. 删除数据库中的记录
         imageDao.delete(Integer.parseInt(imageId));
-        // 4. 删除本地磁盘文件
-        File file = new File(image.getPath());
-        file.delete();
+
+        // 查看待删除图片在数据库中是否存在
+        Image existImage = imageDao.selectByMd5(image.getMd5());
+        // 不存在才删除磁盘文件
+        if(existImage == null){
+            // 4. 删除本地磁盘文件
+            File file = new File(image.getPath());
+            file.delete();
+        }
         resp.setStatus(200);
         resp.getWriter().write("{ \"ok\": true }");
     }
