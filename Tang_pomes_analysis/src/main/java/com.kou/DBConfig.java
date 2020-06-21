@@ -10,7 +10,7 @@ public class DBConfig {
     private static final String host = "127.0.0.1";
     private static final int port = 3306;
     private static final String user = "root";
-    private static final String password = "";
+    private static final String password = "mysql";
     private static final String database = "tangshi";
 
     // 用的饿汉模式的单例
